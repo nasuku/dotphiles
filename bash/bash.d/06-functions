@@ -1,0 +1,68 @@
+lpwd() {
+    rel=$1
+    if [ $# -eq 0 ]
+    then
+        realpath .
+    else
+        realpath $1
+    fi
+}
+
+#some hosts has pdftops and some dont. Hence two versions
+type pdftops > /dev/null 2>&1
+if [ $? == 0 ]
+then
+    #print a pdf
+    pdfprint () {
+        pdftops $1 - | lpr ;
+    }
+    # convert a ps to that it can use the pocketmod folding format
+    pocketmod () {
+        pstops '8:7,0,1,2,5,6,3,4' $1 | psnup -2 |pstops '2:0,1U(1w,1h)'| psnup -2 | psnup -2 > /tmp/1.ps
+    }
+    #print a pdf like a book
+    pdfbookprint () {
+        pdftops $1 - | psbook |psnup -2 -pletter |pstops '2:0,1U@1(21.6cm,28cm)' |lpr ;
+    }
+else
+    #print a pdf
+    pdfprint () {
+        cat $1 | acroread -toPostScript -level2 -fast| lpr ;
+    }
+    #print a pdf like a book
+    pdfbookprint () {
+        cat $1 | acroread -toPostScript -level2 | psbook |psnup -2 -pletter |pstops '2:0,1U@1(21.6cm,28cm)' |lpr ;
+    }
+fi
+
+#print a postscript like a book
+bookprint () {
+    psbook $1 |psnup -2 -pletter |pstops '2:0,1U@1(21.6cm,28cm)' |lpr ;
+}
+#print a postscript like a book using post-script language level=2
+2bookprint () {
+    ps2ps -dLanguageLevel=2 $1 - | psbook |psnup -2 -pletter |pstops '2:0,1U@1(21.6cm,28cm)' |lpr ;
+}
+
+#restore my session or else open the file(s) specified
+v() {
+    if [ $# -ne 0 ]
+    then
+        vim $*
+    else
+        vim -S ~/Session.vim
+    fi
+}
+
+help () {
+    grep $1 ~/notes/help.txt
+}
+
+cvswhat ()
+{
+    cvs -Q status | perl -ne 'print if m/^File.+Status: (?!Up-to-date)/ ..  m/^=/;'
+}
+
+
+# Tell vim that this is a shell script
+# vi:set ft=sh:

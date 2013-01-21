@@ -1,0 +1,31 @@
+# .bashrc
+
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
+HISTIGNORE="&:ls:exit"
+HISTCONTROL=erasedups
+HISTSIZE=2000
+HISTFILESIZE=2000
+
+shopt -s cdspell
+shopt -s no_empty_cmd_completion
+shopt -s checkhash
+shopt -s checkwinsize
+shopt -s expand_aliases
+
+# Source everything in my .bash.d directory.
+for file in "$HOME/.bash.d/"*; do
+    if [ -f "$file" ]; then
+        . "$file"
+    fi
+done
+# and in my .bash.d.local
+for file in "$HOME/.bash.d.local/"*; do
+    if [ -f "$file" ]; then
+        . "$file"
+    fi
+done
+
+
+

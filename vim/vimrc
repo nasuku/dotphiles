@@ -16,7 +16,7 @@ if has("user_commands")
   set rtp+=~/.vim/bundle/vundle/
   call vundle#rc()
   "let g:vundles=['general', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc']
-  let g:vundles=['general']
+  let g:vundles=['general', 'programming', 'ruby', 'python', 'misc']
   " Load 'vundles'
   source ~/.vim/vundles.vim
   " Add extra bundles here...
@@ -25,3 +25,142 @@ endif
 
 " Customize to your needs...
 
+let mapleader = "\\"
+set wrap                " need to wrap line to show the whole content"
+set smarttab            " backspace at the start of the line deletes a tab-worth of space
+set gdefault            " Make /g flag default when doing :s
+set tags=tags;/         " keep looking in all parent directories till /
+set smartindent         " automatically indent after {
+set list listchars=tab:→\ ,trail:▸,extends:>,nbsp:_
+set statusline=\ %{resolve(expand(\"\%\%\"))}%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
+if isdirectory(expand("~/.vim/bundle/syntastic", ":p"))
+    set statusline+=%{SyntasticStatuslineFlag()}    " syntastic status - makes sense with :Errors
+endif
+
+" Allow these file extensions to be accessed via 'gf' of only the name, for
+" e.g. gf on [[AnotherPage]] should go to AnotherPage.md
+set suffixesadd=.md,.txt
+"set viminfo='100,<50,s10,h,%,/50
+
+"When .vimrc is edited, reload it
+autocmd! bufwritepost vimrc source ~/.vimrc
+autocmd BufNewFile,BufRead *.py setlocal list
+autocmd BufNewFile * set fileformat=unix"
+
+" Assume Bash is my shell (:help sh.vim)
+let g:is_bash = 1
+
+" I want cscope from my path not a hardcoded value
+set cscopeprg=cscope
+set cscoperelative      " cscope database is relative to cscope.out
+set cscopetag           " tag-search uses cscope and ctags
+set csto=0              " first cscope and then ctags
+
+" Bundle-specific configurations"{{{
+
+" Bundle 'Lokaltog/vim-easymotion'
+let g:EasyMotion_leader_key = ';;'
+
+" Bundle 'godlygeek/tabular'
+" New commands to align based on = or :
+" Official command is Tabularize
+command -range AlignFirstEquals :<line1>,<line2>Tabularize /^[^=]*\zs/
+command -range AlignFirstColon  :<line1>,<line2>Tabularize /^[^:]*\zs/
+
+" Bundle 'scrooloose/nerdtree'
+" tree explorer
+let NERDTreeIgnore=['\.pyc$', '\.rbc$', '\~$']
+
+" Bundle 'majutsushi/tagbar'
+"  tags explorer in this buffer
+let g:tagbar_autofocus = 1
+let g:tagbar_autoshowtag = 1
+"let g:tagbar_ctags_bin='ctags -f - --format=2 --excmd=pattern --extra= --fields=nksaSmt'
+map <Leader>l :TagbarToggle<CR>
+
+" Bundle 'mileszs/ack.vim'
+nmap <Leader>f :Ack <c-r>=expand("<cword>")<cr><cr>
+set grepprg=ack\ -a
+
+"open up the task list window
+" XXX, TODO etc
+map <unique> <Leader>t <Plug>TaskList
+
+" Bundle 'tpope/vim-fugitive'
+" http://vimcasts.org/blog/2011/05/the-fugitive-series/
+autocmd BufReadPost fugitive://* set bufhidden=delete
+
+" Bundle 'scrooloose/syntastic'
+let g:syntastic_enable_signs=1
+"let s:supported_checkers = ["flake8", "pyflakes", "pylint"]
+"let g:syntastic_python_checker = 'pylint'
+
+"Bundle 'bufexplorer.zip'
+"switch to the specified buffer
+ map ]p :BufExplorer<CR>
+
+" Bundle 'tpope/vim-surround'
+"I have my own surround settings
+let g:surround_no_mappings=1
+" delete surrounding brackets
+nmap ds  <Plug>Dsurround
+" change surroundings
+nmap cs  <Plug>Csurround
+" in Visual mode add Surround
+xmap S   <Plug>VSurround
+
+"}}}
+" Include Local config files"{{{
+let vimrc_local = expand("~/.vimrc.local", ":p")
+if filereadable(vimrc_local)
+    execute 'source' vimrc_local
+endif
+unlet vimrc_local
+
+":if filereadable( "/etc/vimrc" )
+"   source /etc/vimrc
+":endif
+"}}}
+" mappings (except the bundle-specific mappings)"{{{
+"Switch to current dir
+map <leader>cd :cd %:p:h<cr>
+" Edit a file in the same directory as the current buffer
+map <leader>E :e <c-r>=expand("%:p:r")<cr>
+"  to switch between 2 last buffers
+nnoremap ,e :b#<CR>
+" without the next command, # on a newline removes the indent to the start of the line
+inoremap # X#
+nmap ,s :call SwitchSourceHeader()<CR>
+nmap ,q :bd!<CR>
+
+" create tags starting from current directory
+map <unique> <Leader>T :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" f8 to open file using cscope
+map <f8> <esc>:cs find f
+
+"}}}
+" vim functions"{{{
+function! SwitchSourceHeader()
+   let ext = expand("%:e")
+   if (ext == "c")
+      find %:t:r.h
+   elseif (ext == "h")
+      find %:t:r.c
+   endif
+endfunction
+
+function! ShowFuncName()
+  let lnum = line(".")
+  let col = col(".")
+  echohl ModeMsg
+  echo getline(search("^[^ \t#/]\\{2}.*[^:]\s*$", 'bW'))
+  echohl None
+  call search("\\%" . lnum . "l" . "\\%" . col . "c")
+endfun
+map f :call ShowFuncName() <CR>
+
+function! CurDir()
+  let curdir = substitute(getcwd(), '/users/snalluru/', "~/", "g")
+  return curdir
+endfunction
+"}}}

@@ -18,5 +18,9 @@
 data.location=~/.task
 curses=on
 # Color theme
-include ~/.task/colors/solarized/solarized-dark-256.theme
+# include ~/.task/colors/solarized/solarized-dark-256.theme
 
+# no need to put time in journal
+journal.time=off
+# default priority of tasks is M
+default.priority=M

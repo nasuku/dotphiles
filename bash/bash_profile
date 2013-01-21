@@ -1,0 +1,11 @@
+
+# for trueprint
+export TP_OPTS="--I -S 2 -C -F"
+
+if [ -f ~/.bash_profile.local ]; then
+    source ~/.bash_profile.local
+fi
+
+if [ -f ~/.bashrc -a ! -z "$PS1" ]; then
+    source ~/.bashrc
+fi

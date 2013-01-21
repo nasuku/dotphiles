@@ -46,3 +46,7 @@ svn-commit.*
 tags
 TAGS
 
+cscope.out
+ncscope.out
+cscope.in.out
+cscope.po.out

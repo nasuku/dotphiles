@@ -1,0 +1,6 @@
+log -N
+diff -uN
+rdiff -u
+update -Pd
+checkout -P
+release -d

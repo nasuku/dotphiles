@@ -1,0 +1,79 @@
+# Setup some of my own personal preferences
+
+#copied from /users/adsimpki/git/config/src/bash/bash.d
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+prompt_chroot_str='${debian_chroot:+($debian_chroot)}'
+
+
+# I would love to have shellval in prompt but under screen it always
+# shows the shell-val as 2 and looks annoying.
+#if [ "$SHLVL" -gt 1 ]; then
+    #prompt_shlvl=" ($SHLVL)"
+#else
+    #prompt_shlvl=""
+#fi
+prompt_shlvl=""
+
+case "$TERM" in
+    xterm-color|screen|rxvt|rxvt-unicode|screen-256color|xterm-256color)
+        clr_red='\[\033[01;31m\]'
+        clr_green='\[\033[01;32m\]'
+        clr_blue='\[\033[01;34m\]'
+        clr_end='\[\033[00m\]'
+        PS1="[\\t$prompt_shlvl ${prompt_chroot_str}${clr_red}\\u${clr_end}@${clr_red}\\h${clr_end} ${clr_blue}\\W${clr_end}]\\$ "
+        ;;
+    *)
+        PS1="[\\t$prompt_shlvl ${prompt_chroot_str}\\u@\\h \\W]\\$ "
+        ;;
+esac
+
+# Before each prompt, echo an escape sequence telling xterm or screen that
+# a prompt is coming up, so that it can recognize command names
+case "$TERM" in
+    xterm*|rxvt*)
+        # For xterm, the sequence '\033]0;<string>\007' sets the title
+        # to <string>
+        PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}: "'\
+'"${PWD/$HOME/~}\007"'
+        ;;
+    screen)
+        # For screen, the sequence '\033_<string>\033\0134' sets the
+        # hardstatus to <string>
+        # the sequence '\033k<string>\033\0134' sets the title to <string>
+        # the sequence '\033k\033\0134' causes screen to take the title
+        # from the next command entered
+        PROMPT_COMMAND='echo -ne "\033_[Screen n] t "'\
+'"${USER}@${HOSTNAME%%.*}:${PWD/$HOME/~}\033\0134\033k\033\0134"'
+        ;;
+    *)
+        ;;
+esac
+
+# Unset command_not_found_handle
+# On Ubuntu, this function prints a message explaining
+# how to install commands that aren't currently installed.
+# I find it annoying.
+unset command_not_found_handle
+
+# Ubuntu has programmable completion features for many things.
+# However, I'm not terribly fond of it, so I've disabled it for now.
+#if [ -f /etc/bash_completion ]; then
+#    . /etc/bash_completion
+#fi
+
+# make less more friendly for non-text input files, see lesspipe(1)
+#[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+
+LANG=en_US.UTF-8
+LC_COLLATE=C
+export LANG LC_COLLATE
+
+
+# Tell vim that this is a shell script
+# vi:set ft=sh:

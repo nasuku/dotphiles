@@ -1,0 +1,16 @@
+alias make='nice -n 5 gmake -j10'
+alias d='dirs -p'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias pd=pushd
+alias vi=vim
+alias sc='screen -D -R'
+alias diff='diff -u'
+alias g='grep -ir'
+alias l='ls -F'
+
+alias ta='tmux -q has-session > /dev/null 2>&1 && tmux attach-session -d || tmux new-session -s suresh'
+
+# Tell vim that this is a shell script
+# vi:set ft=sh:

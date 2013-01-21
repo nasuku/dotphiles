@@ -10,6 +10,7 @@
 # ===============================================================
 # ESCAPE - the COMMAND CHARACTER
 # ===============================================================
+escape `a
 # escape ^aa  # default
 # escape ^pp  # suggested binding for emacs users
 
@@ -41,14 +42,16 @@ setenv SSH_AUTH_SOCK "/tmp/ssh-agent-$USER"
   nethack               on              # default: off
   startup_message       off             # default: on
   vbell                 off             # default: ???
+  defutf8               on #run everything in unicode, to allow display of international characters w/o problems
    
 #
 # ===============================================================
 # VARIABLES - Number values
 # ===============================================================
-  defscrollback         5000            # default: 100
+  defscrollback         50000            # default: 100
 # msgminwait            3               # default: 1
   silencewait           15              # default: 30
+  maptimeout            100
 #
 # ===============================================================
 # VARIABLES - Paths and Files (esp. programs)
@@ -64,7 +67,7 @@ setenv SSH_AUTH_SOCK "/tmp/ssh-agent-$USER"
 # shell:  Default process started in screen's windows.
 # Makes it possible to use a different shell inside screen
 # than is set as the default login shell.  Halleluja! :-)
-shell                 -zsh
+# shell                 -zsh
 # shell                 bash
 # shell                 ksh
 #
@@ -342,7 +345,7 @@ hardstatus alwayslastline "%{= kw} %-Lw%{=b Kw} %n%f %t %{-}%+Lw %=%{= dd}"
 # see also:  http://www.math.fu-berlin.de/~guckes/ncftp/
 #
 # GOOGLE - Web Search Engine
-  bind ^g  screen -t 'Google' links www.google.com
+# bind ^g  screen -t 'Google' links www.google.com
 #
 # HEISE - IT NewsTicker
 # bind H log # default!
@@ -439,6 +442,9 @@ hardstatus alwayslastline "%{= kw} %-Lw%{=b Kw} %n%f %t %{-}%+Lw %=%{= dd}"
 #bind ^L screen -t watch -n 5 tail -45 /var/log/sysloc
 bind ^Y screen -t log watch -n 5 rail -40 /var/log/syslog
 
+#clear scrollback
+bind / eval "scrollback 0" "scrollback 50000"
+
 #
 #
 # ===============================================================
@@ -474,6 +480,7 @@ bind ^Y screen -t log watch -n 5 rail -40 /var/log/syslog
 # them to "nothing" (empty right-hand-side):
 #
 # bind .  dumptermcap # default
+  bind ^a
   bind .
 # bind ^\ quit        # default
   bind ^\
@@ -503,6 +510,12 @@ bind ^Y screen -t log watch -n 5 rail -40 /var/log/syslog
 # need a DISPLAY.  Text Tools rule!  :-)
 #  setenv DISPLAY ''
 #
+
+# suresh's specific customizations
+#
+chdir 
+fit
+
 # Tell Vim to use a "tabstop" of '4',
 # ie expands TABs to the next column
 # whose number is a multiple of eight.

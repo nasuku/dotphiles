@@ -28,6 +28,8 @@ rdoc=.rdoc
 --actionscript
 --objc
 --ignore-dir=.idea
+--make
+--cc
 
 # follow the symlinks for searching
 --follow

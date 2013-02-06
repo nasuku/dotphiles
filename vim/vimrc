@@ -16,15 +16,16 @@ if has("user_commands")
   set rtp+=~/.vim/bundle/vundle/
   call vundle#rc()
   "let g:vundles=['general', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc']
-  let g:vundles=['general', 'programming', 'ruby', 'python', 'misc']
+  let g:vundles=['general', 'programming', 'python']
   " Load 'vundles'
   source ~/.vim/vundles.vim
   " Add extra bundles here...
   " Bundle 'reponame'
+  " Easily go to next/prev file,buffer,error etc
+  Bundle 'tpope/vim-unimpaired'
 endif
 
 " Customize to your needs...
-
 let mapleader = "\\"
 set wrap                " need to wrap line to show the whole content"
 set smarttab            " backspace at the start of the line deletes a tab-worth of space
@@ -52,7 +53,9 @@ let g:is_bash = 1
 
 " I want cscope from my path not a hardcoded value
 set cscopeprg=cscope
+if has("cscoperelative")
 set cscoperelative      " cscope database is relative to cscope.out
+endif
 set cscopetag           " tag-search uses cscope and ctags
 set csto=0              " first cscope and then ctags
 
@@ -66,6 +69,9 @@ let g:EasyMotion_leader_key = ';;'
 " Official command is Tabularize
 command -range AlignFirstEquals :<line1>,<line2>Tabularize /^[^=]*\zs/
 command -range AlignFirstColon  :<line1>,<line2>Tabularize /^[^:]*\zs/
+
+" for C use // style of comments
+let NERD_c_alt_style=1
 
 " Bundle 'scrooloose/nerdtree'
 " tree explorer
@@ -91,6 +97,7 @@ map <unique> <Leader>t <Plug>TaskList
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
 " Bundle 'scrooloose/syntastic'
+let g:syntastic_c_checker = "disable"
 let g:syntastic_enable_signs=1
 "let s:supported_checkers = ["flake8", "pyflakes", "pylint"]
 "let g:syntastic_python_checker = 'pylint'
@@ -125,7 +132,7 @@ unlet vimrc_local
 "Switch to current dir
 map <leader>cd :cd %:p:h<cr>
 " Edit a file in the same directory as the current buffer
-map <leader>E :e <c-r>=expand("%:p:r")<cr>
+map ,a :e <c-r>=expand("%:p:r")<cr>
 "  to switch between 2 last buffers
 nnoremap ,e :b#<CR>
 " without the next command, # on a newline removes the indent to the start of the line

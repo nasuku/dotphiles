@@ -1,6 +1,7 @@
 
 # for trueprint
 export TP_OPTS="--I -S 2 -C -F"
+export EDITOR=vim
 
 if [ -f ~/.bash_profile.local ]; then
     source ~/.bash_profile.local
